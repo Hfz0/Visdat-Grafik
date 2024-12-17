@@ -3,190 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualisasi Data Nilai</title>
-    <!-- Tambahkan Chart.js -->
+    <title>Dashboard Nilai Mahasiswa</title>
+    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Styling CSS -->
+    <!-- CSS -->
     <style>
-        /* Styling umum */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: whitesmoke;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5;
-            color: #333;
+            color: #ffffff;
         }
 
         header {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #ffffff;
+            color: black;
             text-align: center;
-            padding: 1rem 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem 0;
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: #333;
-            padding: 0.8rem 0;
-        }
-
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 1.1rem;
-        }
-
-        nav a:hover {
-            color: #4CAF50;
-        }
-
-        .container {
-            margin: 30px auto;
-            width: 90%;
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 20px;
+            margin: 0 auto;
             max-width: 1200px;
-            background: white;
+        }
+
+        .card {
+            background-color: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            width: auto;
+            height: auto;
         }
 
-        h2 {
+        .card h3 {
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        .narrative {
+            font-size: 14px;
+            color: black;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .statistics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background-color: whitesmoke;
+            padding: 10px 15px;
+            border-radius: 8px;
             text-align: center;
-            color: #4CAF50;
-            margin-top: 20px;
+            font-size: 14px;
+            color: black;
+            border: 2px solid black;
         }
 
-        canvas {
-            display: block;
-            margin: 20px auto;
-            max-width: 600px;
-        }
-
-        .profile {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .profile p {
-            font-size: 1.2rem;
-            color: #555;
+        select {
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: auto;
+            background-color: white;
+            color: black;
         }
 
         footer {
-            background-color: #333;
-            color: white;
             text-align: center;
             padding: 1rem;
+            background-color: #1E1E1E;
+            color: white;
             margin-top: 20px;
         }
 
-        footer p {
-            margin: 0;
+        /* Penyesuaian Ukuran Chart */
+        canvas {
+            width: auto !important;
+            height: 350px !important;
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <h1>Visualisasi Data Nilai Mahasiswa</h1>
-    </header>
+    <header>Dashboard Nilai Mahasiswa</header>
 
-    <!-- Navigation -->
-    <nav>
-        <a href="#barChart">Bar Chart</a>
-        <a href="#lineChart">Line Chart</a>
-        <a href="#pieChart">Pie Chart</a>
-        <a href="#profile">Profil</a>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Profil -->
-        <section id="profile" class="profile">
-            <h2>Profil Mahasiswa</h2>
-            <p><strong>NIM:</strong> 10122102</p>
-            <p><strong>Nama:</strong> Muhammad Hafiz Akbar</p>
-        </section>
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Radar Chart -->
+        <div class="card">
+            <h3>Radar Chart Nilai Mahasiswa</h3>
+            <p class="narrative">
+                Grafik ini menampilkan nilai Quiz, Tugas, UTS, UAS, dan Nilai Akhir tiap Mahasiswa menggunakan Radar Chart
+            </p>
+            <select id="nimSelect" onchange="updateChart()">
+                <option value="613091003">613091003</option>
+                <option value="613120057">613120057</option>
+                <option value="613090071">613090071</option>
+                <option value="613120058">613120058</option>
+                <option value="613120067">613120067</option>
+                <option value="613120059">613120059</option>
+                <option value="613120050">613120050</option>
+                <option value="613121000">613121000</option>
+                <option value="613120048">613120048</option>
+                <option value="613120044">613120044</option>
+            </select>
+            <canvas id="performanceChart"></canvas>
+        </div>
 
         <!-- Bar Chart -->
-        <h2>Bar Chart: Nilai Akhir dan Quiz</h2>
-        <canvas id="barChart"></canvas>
-
-        <!-- Line Chart -->
-        <h2>Line Chart: Tren Nilai Akhir dan UAS</h2>
-        <canvas id="lineChart"></canvas>
-
-        <!-- Pie Chart -->
-        <h2>Pie Chart: Rata-rata Nilai</h2>
-        <canvas id="pieChart"></canvas>
+        <div class="card">
+            <h3>Bar Chart Nilai Mahasiswa</h3>
+            <p class="narrative">
+                Grafik ini menampilkan nilai Quiz, Tugas, UTS, UAS, dan Nilai Akhir tiap Mahasiswa menggunakan grafik batang (Bar Chart)
+            </p>
+            <canvas id="barChart"></canvas>
+        </div>
+            <!-- Identitas saya -->
+        <div class="card">
+            <h3>Identitas saya</h3>
+            <p class="narrative">
+                Nim: 10122102<br>
+                Nama: Muhammad Hafiz Akbar<br>
+                Kelas: IF-3
+            </p>
+        </div>
+        <!-- Statistik Nilai Mahasiswa -->
+        <div class="card" style="grid-column: span 1;">
+            <h3>Statistik Nilai Mahasiswa</h3>
+            <p class="narrative">
+                Statistik ini menampilkan nilai rata-rata, tertinggi dan terendah dari semua Mahasiswa tiap jenis penilaian
+            </p>
+            <div class="statistics">
+                <div class="stat-box" id="quizStats">
+                    <h4>Quiz</h4>
+                    <p id="quizAvg"></p>
+                    <p id="quizHighest"></p>
+                    <p id="quizLowest"></p>
+                </div>
+                <div class="stat-box" id="tugasStats">
+                    <h4>Tugas</h4>
+                    <p id="tugasAvg"></p>
+                    <p id="tugasHighest"></p>
+                    <p id="tugasLowest"></p>
+                </div>
+                <div class="stat-box" id="utsStats">
+                    <h4>UTS</h4>
+                    <p id="utsAvg"></p>
+                    <p id="utsHighest"></p>
+                    <p id="utsLowest"></p>
+                </div>
+                <div class="stat-box" id="uasStats">
+                    <h4>UAS</h4>
+                    <p id="uasAvg"></p>
+                    <p id="uasHighest"></p>
+                    <p id="uasLowest"></p>
+                </div>
+                <div class="stat-box" id="nilaiAkhirStats">
+                    <h4>Nilai Akhir</h4>
+                    <p id="nilaiAkhirAvg"></p>
+                    <p id="nilaiAkhirHighest"></p>
+                    <p id="nilaiAkhirLowest"></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Muhammad Hafiz Akbar | NIM: 10122102</p>
-    </footer>
+    <footer>&copy; 2024 Muhammad Hafiz Akbar | NIM: 10122102 | Kelas: IF 3</footer>
 
-    <!-- Script Chart.js -->
+    <!-- Chart.js Script -->
     <script>
-        // Data Nilai
         const labels = ['613091003', '613120057', '613090071', '613120058', '613120067', '613120059', '613120050', '613121000', '613120048', '613120044'];
-        const nilaiAkhir = [69.6, 52.2, 55.5, 72.4, 80.5, 38.9, 45.5, 43.8, 49, 57.6];
-        const quiz = [80, 30, 69, 87, 34, 34, 67, 35, 57, 35];
-        const uas = [78, 45, 35, 67, 87, 45, 35, 46, 56, 46];
+        const datasets = {
+            nilaiAkhir: [69.6, 52.2, 55.5, 72.4, 80.5, 38.9, 45.5, 43.8, 49, 57.6],
+            quiz: [80, 30, 69, 87, 34, 34, 67, 35, 57, 35],
+            tugas: [80, 56, 78, 57, 67, 35, 64, 35, 25, 89],
+            uts: [56, 64, 67, 78, 89, 35, 46, 46, 46, 89],
+            uas: [78, 45, 35, 67, 87, 45, 35, 46, 56, 46]
+        };
 
-        // Fungsi hitung rata-rata
-        function hitungRataRata(data) {
-            return (data.reduce((a, b) => a + b, 0) / data.length).toFixed(2);
+        // Fungsi untuk menghitung statistik (Rata-rata, Tertinggi, Terendah)
+        function calculateStats(data) {
+            const avg = data.reduce((sum, value) => sum + value, 0) / data.length;
+            const highest = Math.max(...data);
+            const lowest = Math.min(...data);
+            return { avg, highest, lowest };
         }
 
-        // Bar Chart
-        const ctxBar = document.getElementById('barChart').getContext('2d');
-        new Chart(ctxBar, {
+        // Fungsi untuk update statistik kelas berdasarkan data
+        function updateClassStatistics() {
+            // Menghitung statistik untuk setiap data set
+            let quizStats = calculateStats(datasets.quiz);
+            let tugasStats = calculateStats(datasets.tugas);
+            let utsStats = calculateStats(datasets.uts);
+            let uasStats = calculateStats(datasets.uas);
+            let nilaiAkhirStats = calculateStats(datasets.nilaiAkhir);
+
+            // Update nilai rata-rata, tertinggi, terendah di HTML
+            document.getElementById('quizAvg').innerText = `Rata-rata: ${quizStats.avg.toFixed(2)}`;
+            document.getElementById('quizHighest').innerText = `Tertinggi: ${quizStats.highest}`;
+            document.getElementById('quizLowest').innerText = `Terendah: ${quizStats.lowest}`;
+            
+            document.getElementById('tugasAvg').innerText = `Rata-rata: ${tugasStats.avg.toFixed(2)}`;
+            document.getElementById('tugasHighest').innerText = `Tertinggi: ${tugasStats.highest}`;
+            document.getElementById('tugasLowest').innerText = `Terendah: ${tugasStats.lowest}`;
+            
+            document.getElementById('utsAvg').innerText = `Rata-rata: ${utsStats.avg.toFixed(2)}`;
+            document.getElementById('utsHighest').innerText = `Tertinggi: ${utsStats.highest}`;
+            document.getElementById('utsLowest').innerText = `Terendah: ${utsStats.lowest}`;
+            
+            document.getElementById('uasAvg').innerText = `Rata-rata: ${uasStats.avg.toFixed(2)}`;
+            document.getElementById('uasHighest').innerText = `Tertinggi: ${uasStats.highest}`;
+            document.getElementById('uasLowest').innerText = `Terendah: ${uasStats.lowest}`;
+            
+            document.getElementById('nilaiAkhirAvg').innerText = `Rata-rata: ${nilaiAkhirStats.avg.toFixed(2)}`;
+            document.getElementById('nilaiAkhirHighest').innerText = `Tertinggi: ${nilaiAkhirStats.highest}`;
+            document.getElementById('nilaiAkhirLowest').innerText = `Terendah: ${nilaiAkhirStats.lowest}`;
+        }
+
+        // Initial Chart
+        const chartCtx = document.getElementById('performanceChart').getContext('2d');
+        let performanceChart = new Chart(chartCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Nilai Akhir', 'Quiz', 'Tugas', 'UTS', 'UAS'],
+                datasets: [{
+                    label: 'Nilai Mahasiswa',
+                    data: [datasets.nilaiAkhir[0], datasets.quiz[0], datasets.tugas[0], datasets.uts[0], datasets.uas[0]], // Data untuk NIM 613091003
+                    borderColor: '#4CAF50',
+                    fill: true,
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+        // Fungsi untuk update Radar Chart ketika memilih NIM yang berbeda
+        function updateChart() {
+            const selectedNim = document.getElementById('nimSelect').value;
+            const selectedIndex = labels.indexOf(selectedNim);
+
+            performanceChart.data.datasets[0].data = [
+                datasets.nilaiAkhir[selectedIndex],
+                datasets.quiz[selectedIndex],
+                datasets.tugas[selectedIndex],
+                datasets.uts[selectedIndex],
+                datasets.uas[selectedIndex]
+            ];
+            performanceChart.update();
+            updateClassStatistics();  // Update statistik ketika NIM diubah
+        }
+
+        // Bar Chart nilai mahasiswa
+        new Chart(document.getElementById('barChart'), {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Nilai Akhir', data: nilaiAkhir, backgroundColor: '#4CAF50' },
-                    { label: 'Quiz', data: quiz, backgroundColor: '#FFC107' }
+                    { label: 'Quiz', data: datasets.quiz, backgroundColor: '#4CAF50' },
+                    { label: 'Tugas', data: datasets.tugas, backgroundColor: '#FFC107' },
+                    { label: 'UTS', data: datasets.uts, backgroundColor: '#42A5F5' },
+                    { label: 'UAS', data: datasets.uas, backgroundColor: '#FF7043' },
+                    { label: 'Nilai Akhir', data: datasets.nilaiAkhir, backgroundColor: '#9C27B0' }
                 ]
-            },
-            options: { responsive: true }
+            }
         });
-
-        // Line Chart
-        const ctxLine = document.getElementById('lineChart').getContext('2d');
-        new Chart(ctxLine, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'Nilai Akhir', data: nilaiAkhir, borderColor: '#FF5722', backgroundColor: '#FFCCBC', fill: true },
-                    { label: 'UAS', data: uas, borderColor: '#2196F3', backgroundColor: '#BBDEFB', fill: true }
-                ]
-            },
-            options: { responsive: true }
-        });
-
-        // Pie Chart
-        const ctxPie = document.getElementById('pieChart').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels: ['Nilai Akhir Rata-rata', 'Quiz Rata-rata', 'UAS Rata-rata'],
-                datasets: [{
-                    data: [
-                        hitungRataRata(nilaiAkhir),
-                        hitungRataRata(quiz),
-                        hitungRataRata(uas)
-                    ],
-                    backgroundColor: ['#4CAF50', '#FFC107', '#2196F3']
-                }]
-            },
-            options: { responsive: true }
-        });
+        updateClassStatistics();
     </script>
 </body>
 </html>
